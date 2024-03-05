@@ -1,35 +1,53 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:news_app_api/models/article_model.dart';
+import 'weib_view.dart';
 
 class NewsTile extends StatelessWidget {
-  const NewsTile({
-    super.key,
-  });
+  const NewsTile({super.key, required this.articleModel});
+  final ArticleModel articleModel;
+
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(6)),
-            child: Image(
-              image: AssetImage('assets/health.avif'),
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) {
+                  return WebView(
+                    url: articleModel.url!,
+                    name: articleModel.name!,
+                  );
+                },
+              ));
+            },
+            child: ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(6)),
+              child: CachedNetworkImage(
+                imageUrl: articleModel.image!,
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    CircularProgressIndicator(value: downloadProgress.progress),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+              ),
             ),
           ),
         ),
         Text(
-          'nmbdfbdfhjbvdhjsfv sjhakfdgjdsgf   hdjkfb dfsjkghsjadkfgdf ',
+          articleModel.titel_1 ?? 'ERROR',
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(
-            'hjghfgh dhfgdhjfgj sdhgfjhsgf jdshfjkg',
-            style: TextStyle(
+            articleModel.suptitel ?? 'ERROR',
+            style: const TextStyle(
               color: Colors.grey,
               fontSize: 14,
             ),
